@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flat Extra Area Cost Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f1f1f1;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Flat Extra Area Cost Calculator</h2>
+
+  <label for="extraArea">Enter Extra Carpet Area (sq.ft):</label>
+  <input type="number" id="extraArea" placeholder="e.g. 275">
+
+  <button onclick="calculateCost()">Calculate</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function getURLParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    function calculateCost(areaInput = null) {
+      const area = parseFloat(areaInput || document.getElementById('extraArea').value);
+      if (isNaN(area) || area <= 0) {
+        alert("Please enter a valid area.");
+        return;
+      }
+
+      let baseRate = 9000;
+      let extraRate = 9750;
+      let cost = 0;
+
+      if (area <= 250) {
+        cost = area * baseRate;
+      } else {
+        cost = 250 * baseRate + (area - 250) * extraRate;
+      }
+
+      let stampDuty = 0.07 * cost;
+      let registration = 0.01 * cost;
+      let gst = 0.05 * cost;
+      let totalCost = cost + stampDuty + registration + gst;
+
+      document.getElementById('result').innerHTML = `
+        <strong>Base Cost:</strong> ₹${cost.toLocaleString()}<br>
+        <strong>Stamp Duty (7%):</strong> ₹${stampDuty.toLocaleString()}<br>
+        <strong>Registration (1%):</strong> ₹${registration.toLocaleString()}<br>
+        <strong>GST (5%):</strong> ₹${gst.toLocaleString()}<br>
+        <hr>
+        <strong>Total Payable Amount:</strong> <span style="font-size: 18px; color: green;">₹${totalCost.toLocaleString()}</span>
+      `;
+    }
+
+    window.onload = function () {
+      const areaFromURL = getURLParam('area');
+      if (areaFromURL) {
+        document.getElementById('extraArea').value = areaFromURL;
+        calculateCost(areaFromURL);
+      }
+    };
+  </script>
+</body>
+</html>
